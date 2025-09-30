@@ -322,38 +322,38 @@
                 <p class="text-white/80 text-2xl font-medium">أحمد الذبياني</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <a onclick="showSection('wheel')" class="glass-card card-hover rounded-2xl p-8 text-center cursor-pointer">
+            <div id="main-menu-links" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <a id="link-wheel" class="glass-card card-hover rounded-2xl p-8 text-center cursor-pointer" data-section="wheel">
                     <img src="https://i.postimg.cc/d1GgydPZ/image.png" alt="عجلة الحظ" class="w-20 h-20 mx-auto mb-4">
                     <h2 class="text-2xl font-bold">عجلة الحظ</h2>
                     <p class="text-white/80 mt-2">قم بتدوير العجلة لاختيار فائز</p>
                 </a>
                 
-                <a onclick="showSection('numbers')" class="glass-card card-hover rounded-2xl p-8 text-center cursor-pointer">
+                <a id="link-numbers" class="glass-card card-hover rounded-2xl p-8 text-center cursor-pointer" data-section="numbers">
                     <img src="https://i.postimg.cc/hPZZhMz3/image.png" alt="قرعة الأرقام" class="w-20 h-20 mx-auto mb-4">
                     <h2 class="text-2xl font-bold">قرعة الأرقام</h2>
                     <p class="text-white/80 mt-2">اختر رقمًا عشوائيًا من 1 إلى ما تريد</p>
                 </a>
                 
-                <a onclick="showSection('names')" class="glass-card card-hover rounded-2xl p-8 text-center cursor-pointer">
+                <a id="link-names" class="glass-card card-hover rounded-2xl p-8 text-center cursor-pointer" data-section="names">
                     <img src="https://i.postimg.cc/RVPVP3qn/image.png" alt="قرعة الأسماء" class="w-20 h-20 mx-auto mb-4">
                     <h2 class="text-2xl font-bold">قرعة الأسماء</h2>
                     <p class="text-white/80 mt-2">مخصص للعرض على شاشة</p>
                 </a>
                 
-                <a onclick="showSection('dice')" class="glass-card card-hover rounded-2xl p-8 text-center cursor-pointer">
+                <a id="link-dice" class="glass-card card-hover rounded-2xl p-8 text-center cursor-pointer" data-section="dice">
                     <img src="https://i.postimg.cc/3xdrzKDf/image.png" alt="النرد" class="w-20 h-20 mx-auto mb-4">
                     <h2 class="text-2xl font-bold">النرد</h2>
                     <p class="text-white/80 mt-2">قرعة سريعة من 1 الى 24</p>
                 </a>
                 
-                <a onclick="showSection('coin')" class="glass-card card-hover rounded-2xl p-8 text-center cursor-pointer">
+                <a id="link-coin" class="glass-card card-hover rounded-2xl p-8 text-center cursor-pointer" data-section="coin">
                     <img src="https://i.postimg.cc/0jJ3CXQc/image.png" alt="قلب العملة" class="w-20 h-20 mx-auto mb-4">
                     <h2 class="text-2xl font-bold">قلب العملة</h2>
                     <p class="text-white/80 mt-2">صورة أو كتابة</p>
                 </a>
                 
-                <a onclick="showSection('drag-and-drop')" class="glass-card card-hover rounded-2xl p-8 text-center cursor-pointer">
+                <a id="link-drag-and-drop" class="glass-card card-hover rounded-2xl p-8 text-center cursor-pointer" data-section="drag-and-drop">
                     <img src="https://i.postimg.cc/yx1sjBHP/image.png" alt="ترتيب الأسماء" class="w-20 h-20 mx-auto mb-4">
                     <h2 class="text-2xl font-bold">ترتيب الأسماء</h2>
                     <p class="text-white/80 mt-2">قم بفرز الأسماء في قوائم "أسهل طريقة للتقسيم"</p>
@@ -494,7 +494,7 @@
                         </div>
                         <div class="w-full flex flex-col items-start justify-start gap-3">
                             <div class="flex items-center gap-3">
-                                <input type="checkbox" id="showNumberPopup" checked class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" onchange="saveNumberSettings()">
+                                <input type="checkbox" id="showNumberPopup" class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" onchange="saveNumberSettings()">
                                 <label for="showNumberPopup" class="text-sm text-white">إظهار النافذة المنبثقة للنتيجة</label>
                             </div>
                             <div class="flex items-center gap-3">
@@ -579,7 +579,7 @@
                             </div>
                             <!-- خيارات النافذة المنبثقة -->
                              <div class="flex items-center gap-3">
-                                <input type="checkbox" id="showNamePopup" checked class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" onchange="saveNameSettings()">
+                                <input type="checkbox" id="showNamePopup" class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" onchange="saveNameSettings()">
                                 <label for="showNamePopup" class="text-sm text-white">إظهار النافذة المنبثقة للنتيجة</label>
                             </div>
                             <div class="flex items-center gap-3">
@@ -866,6 +866,10 @@
         let lastTime = 0;
         let velocity = 0;
 
+        // ** المتغيرات الجديدة لتخزين Intervals **
+        let numberInterval = null; // لـ generateRandomNumber
+        let nameInterval = null;   // لـ selectRandomName
+        
         // **الألوان المصححة للفرق:** (أحمر، أزرق، أخضر، أصفر، بنفسجي، برتقالي)
         const teamConfigs = [
             { id: 1, name: 'الفريق الأحمر', color: 'red', emoji: '🔴', bgClass: 'team-red' },
@@ -890,11 +894,13 @@
             win: new Audio(""), 
             // صوت النقر / التيك السريع (يستخدم لعد الأسماء - نرد.m4a)
             // ** تم تغيير click لاستخدام صوت number لضمان صوت عد مستمر **
-            click: new Audio("https://github.com/Abo3bdallah/my-saond/raw/refs/heads/main/%D8%B5%D9%88%D8%AA%20%D8%A7%D9%84%D8%A7%D8%B1%D9%82%D8%A7%D9%852%20.mp3"),
+            click: new Audio(""),
             // صوت عد الأرقام (الرابط الجديد)
             number: new Audio("https://github.com/Abo3bdallah/my-saond/raw/refs/heads/main/%D8%B5%D9%88%D8%AA%20%D8%A7%D9%84%D8%A7%D8%B1%D9%82%D8%A7%D9%852%20.mp3"),
             // صوت احتفال الجمهور (الرابط الجديد) - يستخدم كصوت فوز بصري
             cheer: new Audio("https://github.com/Abo3bdallah/my-saond/raw/refs/heads/main/%D8%B5%D9%88%D8%AA%20%D9%81%D9%88%D8%B2.mp3.mp3"),
+            // ** جديد: صوت المفرقعات/الانفجار **
+            confetti_pop: new Audio("https://github.com/Abo3bdallah/my-saond/raw/refs/heads/main/%D9%85%D9%81%D8%B1%D9%82%D8%B9%D8%A7%D8%AA%201.m4a"),
             // صوت قلب العملة (الرابط الجديد)
             coin: new Audio("https://github.com/Abo3bdallah/my-saond/raw/refs/heads/main/%D8%B5%D9%88%D8%AA%20%D8%B9%D9%85%D9%84%D8%A9.mp3"),
             // صوت رمي النرد (الرابط الجديد)
@@ -926,7 +932,7 @@
                  }
                  
                  // إيقاف أصوات الدوران والتكتكة عند تشغيل أصوات أخرى
-                 if (type === 'error' || type === 'cheer' || type === 'take_name' || type === 'put_name' || type === 'dice') {
+                 if (type === 'error' || type === 'cheer' || type === 'take_name' || type === 'put_name' || type === 'dice' || type === 'confetti_pop') {
                      sounds.spin.pause();
                      sounds.coin.pause();
                      sounds.number.pause();
@@ -964,6 +970,56 @@
             sounds.cheer.currentTime = 0;
         }
 
+        // ==========================================================
+        //         دالة إيقاف جميع الأنشطة (جديد)
+        // ==========================================================
+        function stopAllActivities() {
+            // 1. إيقاف أصوات الدوران والعدادات
+            stopSpinSound();
+            stopCoinSound();
+            stopNumberSound();
+            stopNameTickSound();
+            stopCheerSound();
+
+            // 2. إيقاف الحركة الدوارة للعجلة إذا كانت قيد الدوران
+            if (isSpinning) {
+                const wheel = document.getElementById('wheelCanvas');
+                if (wheel) {
+                    // إيقاف الحركة عبر إزالة transition
+                    wheel.style.transition = 'none';
+                    wheel.style.transform = wheel.style.transform; // للحفاظ على الوضع الحالي
+                    // إعادة تفعيل زر الدوران
+                    document.getElementById('spinWheelButton').disabled = false;
+                    document.getElementById('wheelPointer').classList.remove('wobble');
+                    isSpinning = false;
+                    wheel.removeEventListener('transitionend', handleSpinEnd);
+                }
+            }
+
+            // 3. إيقاف عدادات الأرقام والأسماء
+            if (numberInterval !== null) {
+                clearInterval(numberInterval);
+                numberInterval = null;
+                document.getElementById('generateNumberButton').disabled = false;
+            }
+
+            if (nameInterval !== null) {
+                clearInterval(nameInterval);
+                nameInterval = null;
+                document.getElementById('selectNameButton').disabled = false;
+            }
+
+            // 4. إيقاف حركة قلب العملة
+            const coin = document.getElementById('coin');
+            if (coin) {
+                coin.style.transition = 'none';
+                coin.style.transform = coin.style.transform;
+                document.getElementById('flipCoinButton').disabled = false;
+            }
+
+            // 5. إغلاق النوافذ المنبثقة للنتائج إذا كانت مفتوحة
+            closeResultPopup();
+        }
         
         // ==========================================================
         //         دوّال الحفظ والتحميل (localStorage)
@@ -1037,8 +1093,9 @@
 
         // دالة لتحميل وتطبيق إعدادات قرعة الأرقام
         function loadNumberSettings() {
+            // ** تعديل الإعدادات الافتراضية: showPopup: false, showConfetti: true **
             const settings = loadFromLocalStorage('numberSettings', {
-                size: 100, min: 1, max: 100, duration: 5, showPopup: true, showConfetti: true 
+                size: 100, min: 1, max: 100, duration: 5, showPopup: false, showConfetti: true 
             });
             
             // تطبيق القيم على عناصر التحكم
@@ -1048,8 +1105,12 @@
             document.getElementById('maxNumber').value = settings.max;
             document.getElementById('numberDuration').value = settings.duration;
             document.getElementById('numberDurationValue').textContent = settings.duration;
-            document.getElementById('showNumberPopup').checked = settings.showPopup;
-            document.getElementById('showNumberConfetti').checked = settings.showConfetti;
+            
+            // تطبيق الافتراضيات الجديدة
+            const showPopupCheckbox = document.getElementById('showNumberPopup');
+            const showConfettiCheckbox = document.getElementById('showNumberConfetti');
+            if (showPopupCheckbox) showPopupCheckbox.checked = settings.showPopup;
+            if (showConfettiCheckbox) showConfettiCheckbox.checked = settings.showConfetti;
         }
 
         // ----------------- حفظ إعدادات قرعة الأسماء -----------------
@@ -1073,8 +1134,9 @@
         // دالة لتحميل وتطبيق إعدادات قرعة الأسماء
         function loadNameSettings() {
             names = loadFromLocalStorage('namesList', []); // يتم تحميل القائمة
+            // ** تعديل الإعدادات الافتراضية: showPopup: false, showConfetti: true **
             const settings = loadFromLocalStorage('nameSettings', {
-                width: 100, height: 100, duration: 5, wrapText: false, autoRemoveName: false, showPopup: true, showConfetti: true
+                width: 100, height: 100, duration: 5, wrapText: false, autoRemoveName: false, showPopup: false, showConfetti: true
             });
             
             // تطبيق القيم على عناصر التحكم
@@ -1084,8 +1146,12 @@
             document.getElementById('nameDurationValueModal').textContent = settings.duration;
             document.getElementById('wrapNameText').checked = settings.wrapText;
             document.getElementById('autoRemoveName').checked = settings.autoRemoveName; // تحميل الخيار الجديد
-            document.getElementById('showNamePopup').checked = settings.showPopup;
-            document.getElementById('showNameConfetti').checked = settings.confetti;
+            
+            // تطبيق الافتراضيات الجديدة
+            const showPopupCheckbox = document.getElementById('showNamePopup');
+            const showConfettiCheckbox = document.getElementById('showNameConfetti');
+            if (showPopupCheckbox) showPopupCheckbox.checked = settings.showPopup;
+            if (showConfettiCheckbox) showConfettiCheckbox.checked = settings.showConfetti;
             
             // إذا كانت قائمة الأسماء فارغة عند التحميل، أضف أسماء عينة لتكون جاهزة للاستخدام
             if (names.length === 0) {
@@ -1225,6 +1291,10 @@
         
         // دالة عامة لإظهار الأقسام وإخفائها
         function showSection(sectionName, pushState = true) {
+            
+            // ** الخطوة الأولى: إيقاف جميع الأنشطة قبل مغادرة القسم الحالي **
+            stopAllActivities();
+
             // تحديث القسم الحالي
             currentSection = sectionName;
 
@@ -1775,6 +1845,8 @@
 
         // دالة لتوليد رقم عشوائي
         function generateRandomNumber() {
+            if (numberInterval !== null) return; // منع التفعيل المزدوج
+
             const min = parseInt(document.getElementById('minNumber').value);
             const max = parseInt(document.getElementById('maxNumber').value);
             const showPopup = document.getElementById('showNumberPopup').checked;
@@ -1794,12 +1866,13 @@
             let elapsedTime = 0;
             
             // إيقاف صوت التكتكة السابق إذا كان لا يزال يعمل
-            sounds.click.pause();
+            stopNumberSound();
             
             // تشغيل صوت عد الأرقام (في حلقة)
             playSound('number');
             
-            const interval = setInterval(() => {
+            // ** حفظ Interval ID **
+            numberInterval = setInterval(() => {
                 const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
                 numberElement.textContent = randomNum;
                 numberElement.classList.add('number-animation');
@@ -1810,7 +1883,9 @@
                 elapsedTime += intervalTime;
                 
                 if (elapsedTime >= duration) {
-                    clearInterval(interval);
+                    // ** إيقاف وحذف Interval ID **
+                    clearInterval(numberInterval);
+                    numberInterval = null; 
                     
                     // إيقاف صوت عد الأرقام
                     stopNumberSound();
@@ -1936,6 +2011,8 @@
         
         // دالة لاختيار اسم عشوائي
         function selectRandomName() {
+            if (nameInterval !== null) return; // منع التفعيل المزدوج
+
             if (names.length === 0) {
                 playSound('error');
                 showConfettiPopup('خطأ', 'الرجاء إضافة أسماء أولاً.', null, null, false, true);
@@ -1967,14 +2044,17 @@
             // تشغيل صوت العد (نفس صوت الأرقام)
             playSound('click'); // sound.click هو نفسه sound.number حالياً
             
-            const interval = setInterval(() => {
+            // ** حفظ Interval ID **
+            nameInterval = setInterval(() => {
                 const randomName = names[Math.floor(Math.random() * names.length)];
                 nameElement.textContent = randomName;
                 
                 elapsedTime += intervalTime;
                 
                 if (elapsedTime >= duration) {
-                    clearInterval(interval);
+                    // ** إيقاف وحذف Interval ID **
+                    clearInterval(nameInterval);
+                    nameInterval = null;
                     
                     // إيقاف صوت العد بعد انتهاء الدوران
                     stopNameTickSound(); 
@@ -2471,6 +2551,7 @@
         }
         
         function resetAllTeams() {
+            // ** تم إصلاح الخطأ النحوي هنا: إزالة القوس الزائد ) **
             showConfirmModal('هل تريد إعادة ضبط الأسماء ونقلها كلها إلى قائمة الأسماء غير المرتبة؟', () => {
                 const unorganizedArea = document.getElementById('unorganized');
                 const teamItems = document.querySelectorAll('#teamsContainer .name-item');
@@ -2533,7 +2614,11 @@
             const existingPopup = document.querySelector('.result-popup');
             if (existingPopup) { existingPopup.remove(); }
 
-            if (triggerConfetti) { createConfetti(); }
+            if (triggerConfetti) { 
+                createConfetti(); 
+                // ** تشغيل صوت المفرقعات هنا **
+                playSound('confetti_pop'); 
+            }
             if (!showPopup) { return; }
 
             // ** تشغيل صوت الجمهور فقط إذا كانت النافذة المنبثقة مفعلة **
@@ -2591,6 +2676,17 @@
         
         // تهيئة التطبيق عند التحميل (هنا يتم تحميل جميع الإعدادات لأول مرة)
         window.onload = function() {
+            // ** الخطوة الجديدة: ربط أحداث النقر بالقائمة الرئيسية بعد تحميل الدالة showSection **
+            document.querySelectorAll('#main-menu-links a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const sectionName = e.currentTarget.getAttribute('data-section');
+                    if (sectionName) {
+                        showSection(sectionName);
+                    }
+                });
+            });
+            // ----------------------------------------------------------------------------------
+
             // ** إضافة مستمعات الأحداث هنا لضمان وجود الدوال **
             document.getElementById('wheelOptionsTextarea').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addWheelOption(); }
