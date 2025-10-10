@@ -754,8 +754,8 @@
                 </h1>
                 <div class="max-w-6xl mx-auto">
                     <!-- Team Selection Section -->
-                    <div class="glass-card rounded-xl shadow-lg p-6 mb-6">
-                        <div class="flex gap-4 items-center justify-center flex-wrap">
+                    <div class="glass-card rounded-xl shadow-lg p-6 mb-6 flex justify-between items-center">
+                        <div class="flex gap-4 items-center flex-wrap">
                             <label class="text-lg font-semibold text-white">عدد الفرق:</label>
                             <select id="teamCount" class="px-4 py-2 rounded-lg focus:border-white focus:outline-none text-lg bg-white/20 text-gray-800" onchange="handleTeamCountChange()">
                                 <option value="2">فريقان</option>
@@ -765,6 +765,14 @@
                                 <option value="6">ستة فرق</option>
                             </select>
                         </div>
+                         <!-- زر التصدير الجديد -->
+                        <button
+                            id="exportTeamsBtn"
+                            onclick="exportTeamsToCSV()"
+                            class="bg-white/30 hover:bg-white/50 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center"
+                        >
+                             ⬇️ تصدير إلى CSV
+                        </button>
                     </div>
 
                     <!-- Add Name Section -->
@@ -2218,6 +2226,73 @@
         }
         
         // --- دوال قسم السحب والإفلات ---
+
+        // ** دالة جديدة لتصدير الفرق إلى ملف CSV (إكسل) **
+        function exportTeamsToCSV() {
+            // ** تم تغيير الفاصل إلى فاصلة منقوطة (;) لضمان عمل أفضل مع Excel باللغة العربية **
+            const separator = ';'; 
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // إضافة UTF-8 BOM لدعم اللغة العربية
+
+            // 1. جمع بيانات جميع الأسماء في مصفوفة ثنائية (الاسم، الفريق)
+            const teamData = [];
+            let maxNamesPerTeam = 0;
+
+            const containers = {};
+
+            // أ. استخراج أسماء الفرق (العنوان)
+            containers['unorganized'] = { name: 'غير مرتب', names: [] };
+            // تأكد من استخدام teamConfigs الصحيحة بناءً على currentTeamCount
+            const activeTeamConfigs = teamConfigs.slice(0, currentTeamCount);
+            
+            for (let i = 0; i < activeTeamConfigs.length; i++) {
+                const config = activeTeamConfigs[i];
+                const teamId = `team${config.id}`;
+                const teamName = customTeamNames[teamId] || config.name;
+                containers[teamId] = { name: teamName, names: [] };
+            }
+
+            // ب. ملء الأسماء
+            Object.keys(containers).forEach(containerId => {
+                const containerElement = document.getElementById(containerId);
+                if (containerElement) {
+                    // استخراج النص من عناصر span داخل name-item
+                    const names = Array.from(containerElement.querySelectorAll('.name-item span')).map(span => span.textContent.trim());
+                    containers[containerId].names = names;
+                    if (names.length > maxNamesPerTeam) {
+                        maxNamesPerTeam = names.length;
+                    }
+                }
+            });
+
+            // 2. بناء الرأس (Header Row) باستخدام الفاصل الجديد
+            // استخدام دالة لتحويل النصوص إلى تنسيق CSV صحيح (إضافة علامات تنصيص)
+            const header = Object.values(containers).map(c => `"${c.name.replace(/"/g, '""')}"`).join(separator);
+            csvContent += header + "\n";
+
+            // 3. بناء الصفوف (Data Rows) باستخدام الفاصل الجديد
+            for (let i = 0; i < maxNamesPerTeam; i++) {
+                const row = Object.keys(containers).map(containerId => {
+                    const name = containers[containerId].names[i] || "";
+                    // تغليف الاسم بعلامتي تنصيص لضمان عرض الأسماء التي تحتوي على فواصل أو مسافات بشكل صحيح في Excel
+                    return `"${name.replace(/"/g, '""')}"`; 
+                }).join(separator);
+                csvContent += row + "\n";
+            }
+
+            // 4. إنشاء الرابط وتنزيل الملف
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            
+            // تاريخ اليوم
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+            
+            link.setAttribute("download", `Teams_Export_${dateStr}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
         
         // ** دالة جديدة لتغيير اسم الفريق **
         function renameTeam(teamId) {
